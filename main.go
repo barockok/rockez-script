@@ -41,6 +41,8 @@ type restoreRequestBody struct {
 	IncludeGlobalState bool   `json:"include_global_state"`
 	IncludeAliases     bool   `json:"include_aliases"`
 	Partial            bool   `json:"partial"`
+    RenamePattern      string `json:"rename_pattern,omitempty"`
+    RenameReplacement  string `json:"rename_replacement,omitempty"`
 }
 
 func main() {
@@ -53,6 +55,8 @@ func main() {
         dstDir       string
 		timeframeArg string
 		grepArg      string
+        renamePattern string
+        renameReplacement string
 		maxWorkers   int
 	)
 
@@ -64,6 +68,8 @@ func main() {
     flag.StringVar(&dstDir, "dest-dir", "", "Destination local directory to receive copy and restore request (alternative to --dest-bucket)")
 	flag.StringVar(&timeframeArg, "timeframe", "", "Timeframe filter RFC3339/RFC3339 (e.g. 2025-09-01T00:00:00Z/2025-09-10T23:59:59Z)")
 	flag.StringVar(&grepArg, "grep", "", "Substring or regex to match snapshot name or index names")
+    flag.StringVar(&renamePattern, "rename-pattern", "", "Rename pattern for restore (Elasticsearch regex), e.g. 'orders-(.*)'")
+    flag.StringVar(&renameReplacement, "rename-replacement", "", "Rename replacement for restore, e.g. 'orders-restored-$1'")
 	flag.IntVar(&maxWorkers, "concurrency", 16, "Max concurrent copies")
 	flag.Parse()
 
@@ -163,6 +169,8 @@ func main() {
 		IncludeGlobalState: false,
 		IncludeAliases:     true,
 		Partial:            false,
+        RenamePattern:      renamePattern,
+        RenameReplacement:  renameReplacement,
 	}
     if err := writeRestoreRequestGeneric(ctx, dstRepo, selectedSnapshot, req); err != nil {
 		log.Fatalf("failed to write restore request: %v", err)

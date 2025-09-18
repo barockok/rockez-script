@@ -47,3 +47,23 @@ Run (Local -> GCS) or (GCS -> Local): provide the appropriate pair for the side 
 Notes:
 - The repository is copied entirely to keep restore compatibility. The timeframe/grep are used to suggest a snapshot and indices filter for the restore API payload that is written as JSON.
 - Ensure the destination repo is registered in Elasticsearch (via `PUT _snapshot/{name}`) pointing to the destination bucket before running restore.
+
+### Local test with Docker Compose
+
+This repo includes a simple local verification using Docker Compose and a shell script.
+
+Requirements: Docker, Docker Compose, `jq`.
+
+Steps:
+```bash
+go build -o rockez-script
+bash test/run.sh
+```
+
+What it does:
+- Starts a single-node Elasticsearch with a mounted local snapshot repo at `./snapshots`.
+- Indexes seed documents from `test/seed.json`.
+- Creates a snapshot of indices (`orders-*`, `users-*`).
+- Runs the CLI to copy the repo to `./snapshots_copy`, generating a restore request that filters with `--grep 'orders-.*'` and renames to `orders-restored-$1`.
+- Registers the copied repo and restores it into Elasticsearch.
+- Prints `_cat/indices` so you can verify `orders-restored-*` indices exist.

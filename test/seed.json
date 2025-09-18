@@ -1,0 +1,6 @@
+{"index":{"_index":"orders-2025.09.10","_id":"1"}}
+{"order_id":1,"customer":"alice","total":123.45,"ts":"2025-09-10T12:00:00Z"}
+{"index":{"_index":"orders-2025.09.11","_id":"2"}}
+{"order_id":2,"customer":"bob","total":67.89,"ts":"2025-09-11T13:00:00Z"}
+{"index":{"_index":"users-2025.09.11","_id":"3"}}
+{"user_id":3,"name":"carol","ts":"2025-09-11T14:00:00Z"}
